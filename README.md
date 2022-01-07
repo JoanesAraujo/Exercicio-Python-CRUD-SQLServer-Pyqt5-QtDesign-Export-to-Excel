@@ -1,4 +1,4 @@
-# 👨‍💻️ Criando um Sistema de cadastro pessoas CRUD Em PyQt5 Usando QT Designer, exportar para excel e salvar no banco de dados SQL Server.
+# 👨‍💻️ Criando um Sistema de cadastro pessoas Em PyQt5 Usando QT Designer. Exportar para excel e salvar no banco de dados SQL Server.
 
 - Criação de tela no qtdesign de cadastro pessoas.<br/> 
 - Formulário com inputs e botões de ações.<br/>

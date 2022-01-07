@@ -7,6 +7,10 @@ import pandas as pd
 import os
 from datetime import datetime
 
+
+numero_id = 0
+
+
 dados_conexao = (
     "Driver={SQL Server};"
     "Server=DESKTOP-5SO7F5F;"
@@ -68,7 +72,45 @@ def excluir():
     cursor.execute("DELETE FROM pes_fisica WHERE id="+ str(valor_id))
 
     cursor.commit()
-    
+
+
+def editar():
+    global numero_id    
+    linha = cadastro.tableWidget.currentRow()
+    #cadastro.tableWidget.removeRow(linha)
+    cursor = conexao.cursor()
+    cursor.execute("SELECT id FROM pes_fisica")
+    dados_lidos = cursor.fetchall()
+    valor_id = dados_lidos[linha][0]
+    cursor.execute("SELECT * FROM pes_fisica WHERE id="+ str(valor_id))
+    pessoas = cursor.fetchall()
+    form_editar.show()
+
+    numero_id = valor_id
+
+    form_editar.lineEdit.setReadOnly(pessoas[0][0])
+    form_editar.lineEdit_2.setText(str(pessoas[0][1]))
+    form_editar.lineEdit_3.setText(str(pessoas[0][2]))
+    form_editar.lineEdit_4.setText(str(pessoas[0][3]))
+    form_editar.lineEdit_5.setText(str(pessoas[0][4]))
+
+def salvar_dados_editados():
+    #pega o numero do id
+    global numero_id
+    #valor digitado no lineEdit
+    nome = form_editar.lineEdit_2.text()
+    cpf = form_editar.lineEdit_3.text()
+    cel = form_editar.lineEdit_4.text()
+    email = form_editar.lineEdit_5.text()
+    #atualizar os dados no banco
+    cursor = conexao.cursor()
+    cursor.execute("UPDATE pes_fisica SET nome = '{}', cpf = '{}', cel = '{}', email ='{}' WHERE id = {}".format(nome,cpf,cel,email,numero_id))
+    cursor.commit()
+    #atualizar as janelas
+    form_editar.close()
+    refresh()
+
+
 def funcao_principal():
     linha1 = cadastro.lineName.text()
     linha2 = cadastro.lineCPF.text()
@@ -107,6 +149,10 @@ cadastro.pushButton.clicked.connect(funcao_principal)
 cadastro.pushButton_2.clicked.connect(refresh)
 cadastro.pushButton_3.clicked.connect(export_to_excel)
 cadastro.pushButton_4.clicked.connect(excluir)
+cadastro.pushButton_5.clicked.connect(editar)
+form_editar=uic.loadUi("form_editar.ui")
+form_editar.setWindowTitle("Editar:")
+form_editar.pushButton_3.clicked.connect(salvar_dados_editados)
 
 
 
