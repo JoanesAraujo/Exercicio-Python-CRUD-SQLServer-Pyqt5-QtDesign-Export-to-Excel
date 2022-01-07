@@ -1,0 +1,22 @@
+Passo 1: Baixar e instalar o SSMS - digitar no google download ssms e baixar 1º link
+Passo 2: Instalar
+Passo 3: Criar Banco de Dados, abrindo uma query e rodando:
+
+CREATE DATABASE Nome_Banco_Dados
+
+Passo 4: Criar tabela, usando:
+
+USE pessoa
+CREATE TABLE pes_fisica(
+    id int IDENTITY(1,1) PRIMARY KEY,
+    nome varchar(150),
+    cpf varchar(14),
+    cel varchar(14),
+    email varchar(50)
+    )
+
+Passo 5: Adicionar 1 valor exemplo:
+
+INSERT INTO Vendas(id_venda, cliente, produto, data_venda, preco, quantidade)
+VALUES
+    (1, 'Joanes', 'PC', '21/12/2021', 8000, 1)
