@@ -2,14 +2,14 @@ from PyQt5 import  uic,QtWidgets
 from PyQt5.QtWidgets import QHBoxLayout, QMessageBox, QPushButton, QTableWidget, QVBoxLayout, QWidget
 from PyQt5.QtGui import QIcon
 from reportlab.pdfgen import canvas
+import re
 import pyodbc
 import pandas as pd
 import os
 from datetime import datetime
 
 
-numero_id = 0
-
+numero_id = 0 
 
 dados_conexao = (
     "Driver={SQL Server};"
@@ -61,19 +61,29 @@ def export_to_excel():
     msg.exec()
     # fim mensagem
 
-def excluir():
+def excluir():       
     linha = cadastro.tableWidget.currentRow()
-    #print(linha)
     cadastro.tableWidget.removeRow(linha)
-    cursor = conexao.cursor()
-    cursor.execute("SELECT id FROM pes_fisica")
+    cursor.execute("SELECT id FROM pes_fisica ")    
     dados_lidos = cursor.fetchall()
     valor_id = dados_lidos[linha][0]
-    cursor.execute("DELETE FROM pes_fisica WHERE id="+ str(valor_id))
-
-    cursor.commit()
-
-
+    
+    # mensagem para deletar ?
+    msgBox = QMessageBox()
+    msgBox.setIcon(msgBox.Question)   
+    msgBox.setWindowTitle("Excluir Pessoa")
+    msgBox.setText("Você deseja remover? o id = " +str(valor_id))
+    msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No )
+    ret = msgBox.exec_()
+    if ret == QMessageBox.Yes:
+        cursor.execute("DELETE FROM pes_fisica WHERE id = " +str(valor_id))
+        cursor.commit()            
+    else:
+        print("voce nao quis deletar")
+        refresh()
+           
+            
+       
 def editar():
     global numero_id    
     linha = cadastro.tableWidget.currentRow()
@@ -109,15 +119,52 @@ def salvar_dados_editados():
     #atualizar as janelas
     form_editar.close()
     refresh()
-
+    
 
 def funcao_principal():
+    pat = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-z]{1,3}$"
+    phone = "^\([1-9]{2}\) (?:[2-8]|9[1-9])[0-9]{3}\-[0-9]{4}$"   
     linha1 = cadastro.lineName.text()
+    if linha1 == '':
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Informação:")
+        msgBox.setIcon(msgBox.Information)
+        msgBox.setText('Voce precisa digitar um nome')
+        msgBox.exec()
+        return    
     linha2 = cadastro.lineCPF.text()
     linha3 = cadastro.lineCel.text()
+    if linha3 == '':
+        pass
+        
+    elif not re.search(phone,linha3):
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Informação:")
+        msgBox.setIcon(msgBox.Information)        
+        msgBox.setText('Voce precisa digitar um telefone valido')        
+        msgBox.setInformativeText("Ex. (xx) xxxxx-xxxx")
+        msgBox.exec()
+        return
+
     linha4 = cadastro.lineEmail.text()
     
-       
+    if linha4 == '':
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Informação:")
+        msgBox.setIcon(msgBox.Information)        
+        msgBox.setText('Voce precisa digitar um email')
+        msgBox.exec()
+        return
+    if not re.match(pat,linha4):
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Informação:")
+        msgBox.setIcon(msgBox.Information)        
+        msgBox.setText('Voce precisa digitar um email valido')
+        msgBox.setInformativeText("Ex. exemplo@exemplo.com")
+        msgBox.exec()
+        return
+
+             
     cursor = conexao.cursor()
     comando = f"""INSERT INTO pes_fisica (nome, cpf, cel, email)
 VALUES
@@ -174,6 +221,8 @@ for i in range(0, len(dados_lidos)):
         for j in range(0, 5):
            cadastro.tableWidget.setItem(i,j,QtWidgets.QTableWidgetItem(str(dados_lidos[i][j])))
 #-FIM LISTA-
+
+
 
 cadastro.show()
 app.exec()
