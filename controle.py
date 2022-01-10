@@ -66,8 +66,7 @@ def excluir():
     cadastro.tableWidget.removeRow(linha)
     cursor.execute("SELECT id FROM pes_fisica ")    
     dados_lidos = cursor.fetchall()
-    valor_id = dados_lidos[linha][0]
-    
+    valor_id = dados_lidos[linha][0]    
     # mensagem para deletar ?
     msgBox = QMessageBox()
     msgBox.setIcon(msgBox.Question)   
@@ -125,13 +124,22 @@ def funcao_principal():
     pat = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-z]{1,3}$"
     phone = "^\([1-9]{2}\) (?:[2-8]|9[1-9])[0-9]{3}\-[0-9]{4}$"   
     linha1 = cadastro.lineName.text()
+
     if linha1 == '':
         msgBox = QMessageBox()
         msgBox.setWindowTitle("Informação:")
         msgBox.setIcon(msgBox.Information)
         msgBox.setText('Voce precisa digitar um nome')
         msgBox.exec()
-        return    
+        return  
+    if not linha1.isalpha():
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Informação:")
+        msgBox.setIcon(msgBox.Information)
+        msgBox.setText('No campo Nome, digite apenas letras!')
+        msgBox.exec()
+        return  
+  
     linha2 = cadastro.lineCPF.text()
     linha3 = cadastro.lineCel.text()
     if linha3 == '':
@@ -152,7 +160,7 @@ def funcao_principal():
         msgBox = QMessageBox()
         msgBox.setWindowTitle("Informação:")
         msgBox.setIcon(msgBox.Information)        
-        msgBox.setText('Voce precisa digitar um email')
+        msgBox.setText('Voce precisa digitar um email (Obrigatorio)')
         msgBox.exec()
         return
     if not re.match(pat,linha4):
