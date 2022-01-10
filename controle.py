@@ -104,13 +104,55 @@ def editar():
     form_editar.lineEdit_5.setText(str(pessoas[0][4]))
 
 def salvar_dados_editados():
+    pat = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-z]{1,3}$"
+    phone = "^\([1-9]{2}\) (?:[2-8]|9[1-9])[0-9]{3}\-[0-9]{4}$"
     #pega o numero do id
     global numero_id
     #valor digitado no lineEdit
     nome = form_editar.lineEdit_2.text()
+    if nome == '':
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Informação:")
+        msgBox.setIcon(msgBox.Information)
+        msgBox.setText('Voce precisa digitar um nome')
+        msgBox.exec()
+        return  
+    if not nome.isalpha():
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Informação:")
+        msgBox.setIcon(msgBox.Information)
+        msgBox.setText('No campo Nome, digite apenas letras!')
+        msgBox.exec()
+        return  
     cpf = form_editar.lineEdit_3.text()
     cel = form_editar.lineEdit_4.text()
+    if cel == '':
+       pass
+        
+    elif not re.search(phone,cel):
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Informação:")
+        msgBox.setIcon(msgBox.Information)        
+        msgBox.setText('Voce precisa digitar um telefone valido')        
+        msgBox.setInformativeText("Ex. (xx) xxxxx-xxxx")
+        msgBox.exec()
+        return
     email = form_editar.lineEdit_5.text()
+    if email == '':
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Informação:")
+        msgBox.setIcon(msgBox.Information)        
+        msgBox.setText('Voce precisa digitar um email (Obrigatorio)')
+        msgBox.exec()
+        return
+    if not re.match(pat,email):
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Informação:")
+        msgBox.setIcon(msgBox.Information)        
+        msgBox.setText('Voce precisa digitar um email valido')
+        msgBox.setInformativeText("Ex. exemplo@exemplo.com")
+        msgBox.exec()
+        return
     #atualizar os dados no banco
     cursor = conexao.cursor()
     cursor.execute("UPDATE pes_fisica SET nome = '{}', cpf = '{}', cel = '{}', email ='{}' WHERE id = {}".format(nome,cpf,cel,email,numero_id))
@@ -208,8 +250,6 @@ cadastro.pushButton_5.clicked.connect(editar)
 form_editar=uic.loadUi("form_editar.ui")
 form_editar.setWindowTitle("Editar:")
 form_editar.pushButton_3.clicked.connect(salvar_dados_editados)
-
-
 
 
 
