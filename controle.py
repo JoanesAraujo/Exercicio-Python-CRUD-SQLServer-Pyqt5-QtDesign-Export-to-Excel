@@ -47,7 +47,7 @@ def export_to_excel():
     writer = pd.ExcelWriter("LISTA_DE_PESSOAS.xlsx", engine = 'xlsxwriter')
     # here, you can store your query's result data
     df = pd.read_sql(sql = sqlQuery, con = conexao)
-    df.to_excel(writer, sheet_name = 'Pessoas_Fisicas')
+    df.to_excel(writer, sheet_name = 'Pessoas_Fisicas', index=False)
 
     writer.save()
     #writer.close()
@@ -66,7 +66,7 @@ def excluir():
     cadastro.tableWidget.removeRow(linha)
     cursor.execute("SELECT id FROM pes_fisica ")    
     dados_lidos = cursor.fetchall()
-    valor_id = dados_lidos[linha][0]    
+    valor_id = dados_lidos[linha][0] 
     # mensagem para deletar ?
     msgBox = QMessageBox()
     msgBox.setIcon(msgBox.Question)   
