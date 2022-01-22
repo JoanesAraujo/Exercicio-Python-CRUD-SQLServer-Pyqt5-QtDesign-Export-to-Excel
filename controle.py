@@ -76,7 +76,7 @@ def excluir():
     msgBox = QMessageBox()
     msgBox.setIcon(msgBox.Question)   
     msgBox.setWindowTitle("Excluir Pessoa")
-    msgBox.setText(f'Você deseja remover?  {valor_nome} ')
+    msgBox.setText(f'Você deseja remover? {valor_nome} ')
     msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No )
     ret = msgBox.exec_()
     if ret == QMessageBox.Yes:
