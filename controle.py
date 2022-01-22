@@ -61,17 +61,22 @@ def export_to_excel():
     msg.exec()
     # fim mensagem
 
-def excluir():       
+def excluir():
     linha = cadastro.tableWidget.currentRow()
     cadastro.tableWidget.removeRow(linha)
-    cursor.execute("SELECT id FROM pes_fisica ")    
+    cursor.execute("SELECT id FROM pes_fisica")  
     dados_lidos = cursor.fetchall()
-    valor_id = dados_lidos[linha][0] 
+    valor_id = dados_lidos[linha][0]
+    # cursor_2 é para pegar o nome do contato a ser deletado, passando na mensagem: Variável-> valor_nome 
+    cursor_2 = cursor.execute("SELECT nome FROM pes_fisica")      
+    dados_lidos_2 = cursor_2.fetchall()
+    valor_nome = dados_lidos_2[linha][0]
+
     # mensagem para deletar ?
     msgBox = QMessageBox()
     msgBox.setIcon(msgBox.Question)   
     msgBox.setWindowTitle("Excluir Pessoa")
-    msgBox.setText("Você deseja remover? o id = " +str(valor_id))
+    msgBox.setText(f'Você deseja remover?  {valor_nome} ')
     msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No )
     ret = msgBox.exec_()
     if ret == QMessageBox.Yes:
@@ -80,8 +85,6 @@ def excluir():
     else:
         print("voce nao quis deletar")
         refresh()
-           
-            
        
 def editar():
     global numero_id    
