@@ -217,29 +217,37 @@ def funcao_principal():
         msgBox.exec()
         return
 
-             
     cursor = conexao.cursor()
-    comando = f"""INSERT INTO pes_fisica (nome, cpf, cel, email)
-VALUES
-    ('{linha1}', '{linha2}', '{linha3}', '{linha4}')"""
+    cursor.execute(f"SELECT * FROM pes_fisica WHERE email='{linha4}'")
+    if cursor.fetchall():
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle("Informação:")
+        msgBox.setIcon(msgBox.Information)        
+        msgBox.setText('Usuário já cadastrado')
+        msgBox.exec()
+    else:
 
-    cursor.execute(comando)
-    cursor.commit()
+        comando = f"""INSERT INTO pes_fisica (nome, cpf, cel, email)
+    VALUES
+        ('{linha1}', '{linha2}', '{linha3}', '{linha4}')"""
 
-    # mensagem ao salvar com sucesso
-    msg = QMessageBox()
-    msg.setIcon(msg.Information)
-    msg.setWindowTitle("Sucesso")
-    msg.setText(" Usuario salvo com sucesso" )
-    msg.exec()
-    # fim mensagem
+        cursor.execute(comando)
+        cursor.commit()
 
-    # limpar campos ao adicionar
-    cadastro.lineName.setText("")
-    cadastro.lineCPF.setText("")
-    cadastro.lineCel.setText("")
-    cadastro.lineEmail.setText("")
-    # fim limpar campos
+        # mensagem ao salvar com sucesso
+        msg = QMessageBox()
+        msg.setIcon(msg.Information)
+        msg.setWindowTitle("Sucesso")
+        msg.setText(" Usuario salvo com sucesso" )
+        msg.exec()
+        # fim mensagem
+
+        # limpar campos ao adicionar
+        cadastro.lineName.setText("")
+        cadastro.lineCPF.setText("")
+        cadastro.lineCel.setText("")
+        cadastro.lineEmail.setText("")
+        # fim limpar campos
     
 
 app=QtWidgets.QApplication([])
